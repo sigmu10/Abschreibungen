@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abschreibungen – Übersicht &amp; Übung</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'DM Sans',sans-serif;background:#f7f6f3;color:#2c2c2a;padding:1.5rem 0.75rem;display:flex;justify-content:center}
+  .container{max-width:880px;width:100%}
+  h1{font-size:1.2rem;font-weight:600;text-align:center;margin-bottom:0.1rem;letter-spacing:-0.02em}
+  .subtitle{text-align:center;font-size:0.8rem;color:#73726c;margin-bottom:1rem}
+
+  .matrix{display:grid;grid-template-columns:110px 1fr 1fr;grid-template-rows:50px auto;gap:0;margin-bottom:1.5rem}
+  .m-corner{grid-row:1;grid-column:1;position:relative}
+  .m-corner .lx{position:absolute;bottom:8px;right:6px;font-size:.58rem;color:#888;text-transform:uppercase;letter-spacing:.04em}
+  .m-corner .ly{position:absolute;top:8px;left:6px;font-size:.58rem;color:#888;text-transform:uppercase;letter-spacing:.04em}
+  .m-ch{grid-row:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-bottom:2px solid #d3d1c7}
+  .m-ch h2{font-size:.82rem;font-weight:600;margin-bottom:.05rem}
+  .m-ch span{font-size:.68rem;color:#73726c}
+  .m-rh{grid-column:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-right:2px solid #d3d1c7;padding:.3rem}
+  .m-rh h2{font-size:.82rem;font-weight:600;margin-bottom:.05rem}
+  .m-rh span{font-size:.66rem;color:#73726c;text-align:center;line-height:1.25}
+  .m-cell{margin:4px;padding:.55rem .5rem;border-radius:8px;display:flex;flex-direction:column;gap:.25rem}
+  .m-cell h3{font-size:.76rem;font-weight:600}
+  .m-cell .bs{font-family:'DM Mono',monospace;font-size:.68rem;font-weight:500;padding:.15rem .35rem;border-radius:4px;display:inline-block;width:fit-content}
+  .m-cell .hint{font-size:.64rem;color:#5f5e5a;font-style:italic}
+
+  .bg-tl{background:#e1f5ee} .bg-tr{background:#e6f1fb} .bg-bl{background:#eeedfe} .bg-br{background:#faece7}
+  .bg-tl h3{color:#085041} .bg-tr h3{color:#0c447c} .bg-bl h3{color:#3c3489} .bg-br h3{color:#712b13}
+  .bg-tl .bs{background:#9fe1cb;color:#04342c} .bg-tr .bs{background:#b5d4f4;color:#042c53}
+  .bg-bl .bs{background:#cecbf6;color:#26215c} .bg-br .bs{background:#f5c4b3;color:#4a1b0c}
+
+  .aufgabe-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.8rem;flex-wrap:wrap;gap:.5rem}
+  .aufgabe-header h2{font-size:1rem;font-weight:600}
+  .aufgabe-info{font-size:.78rem;color:#5f5e5a;padding:.35rem .7rem;background:#eeedeb;border-radius:6px}
+  .aufgabe-info strong{font-weight:600}
+  .btn-row{display:flex;gap:.4rem;flex-wrap:wrap}
+  .btn{font-family:'DM Sans',sans-serif;font-size:.7rem;font-weight:500;padding:.25rem .6rem;border-radius:5px;border:1px solid #d3d1c7;background:#fff;color:#5f5e5a;cursor:pointer;transition:all .15s}
+  .btn:hover{background:#eeedeb;border-color:#b4b2a9}
+  .btn-solve{border-color:#0f6e56;color:#0f6e56} .btn-solve:hover{background:#e1f5ee}
+  .btn-reset{border-color:#993c1d;color:#993c1d} .btn-reset:hover{background:#faece7}
+
+  .exercises{display:flex;flex-direction:column;gap:1rem}
+  .ex-block{border-radius:10px;padding:.75rem .7rem}
+  .ex-block h3{font-size:.82rem;font-weight:600;margin-bottom:.4rem}
+
+  .ex-row{display:flex;gap:.6rem;flex-wrap:wrap;align-items:stretch}
+  .ex-year{flex:1;min-width:280px;display:flex;flex-direction:column;gap:.25rem}
+  .ex-year-label{font-size:.64rem;font-weight:600;color:#73726c;text-transform:uppercase;letter-spacing:.04em}
+
+  .field-row{display:flex;align-items:center;gap:.3rem;font-size:.68rem;margin-bottom:.2rem}
+  .field-label{font-size:.64rem;color:#73726c;min-width:70px}
+
+  input[type="text"]{
+    font-family:'DM Mono',monospace;font-size:.66rem;
+    border:1.5px dashed rgba(0,0,0,.18);border-radius:4px;
+    background:rgba(255,255,255,.55);padding:2px 5px;outline:none;
+    transition:border-color .15s,background .15s;color:#2c2c2a;
+  }
+  input:focus{border-color:rgba(0,0,0,.4);background:rgba(255,255,255,.85)}
+  input.correct{background:rgba(29,158,117,.12);border-color:#1D9E75;color:#085041}
+  input.incorrect{background:rgba(226,75,74,.1);border-color:#E24B4A;color:#791f1f}
+  .inp-bs{width:100%;max-width:210px}
+  .inp-calc{width:100%;max-width:210px;font-style:italic}
+
+  .t-konten{display:flex;gap:.4rem;flex-wrap:wrap}
+  .t-konto{flex:1;min-width:135px}
+  .t-title{font-family:'DM Sans',sans-serif;font-weight:600;font-size:.64rem;text-align:center;padding-bottom:2px}
+  .t-body{display:grid;grid-template-columns:1fr 1fr;border-top:2px solid}
+  .t-left,.t-right{padding:3px 4px;display:flex;flex-direction:column;gap:2px}
+  .t-left{border-right:1px solid rgba(0,0,0,.12)}
+  .t-entry{display:flex;align-items:center;gap:3px}
+  .t-entry-label{color:#888;font-size:.54rem;font-family:'DM Sans',sans-serif;min-width:30px;flex-shrink:0}
+  .t-entry input{flex:1;min-width:0;width:100%;font-size:.64rem;padding:2px 4px}
+
+  .bg-tl .t-title{color:#085041} .bg-tl .t-body{border-color:#0f6e56}
+  .bg-tr .t-title{color:#0c447c} .bg-tr .t-body{border-color:#185fa5}
+  .bg-bl .t-title{color:#3c3489} .bg-bl .t-body{border-color:#534ab7}
+  .bg-br .t-title{color:#712b13} .bg-br .t-body{border-color:#993c1d}
+
+  .year-spacer{flex-grow:1}
+
+  .footer{text-align:center;margin-top:1.2rem;font-size:.72rem;color:#888;line-height:1.45}
+
+  @media(max-width:640px){
+    .matrix{grid-template-columns:70px 1fr 1fr}
+    .ex-row{flex-direction:column}
+    .ex-year{min-width:unset}
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Abschreibungen – Übersicht</h1>
+  <p class="subtitle">Berechnung × Verbuchung</p>
+
+  <div class="matrix">
+    <div class="m-corner"><span class="ly">Berechnung ↓</span><span class="lx">Verbuchung →</span></div>
+    <div class="m-ch" style="grid-column:2"><h2>Direkt</h2><span>Anlage direkt vermindert</span></div>
+    <div class="m-ch" style="grid-column:3"><h2>Indirekt</h2><span>Über WB-Konto</span></div>
+    <div class="m-rh" style="grid-row:2"><h2>Linear</h2><span>% vom AnW<br>→ konstant</span></div>
+    <div class="m-rh" style="grid-row:3"><h2>Degressiv</h2><span>% vom BuW<br>→ sinkend</span></div>
+    <div class="m-cell bg-tl"><h3>Linear + direkt</h3><div class="bs">Abschr. / Maschine</div><div class="hint">Betrag = AnW × Satz</div></div>
+    <div class="m-cell bg-tr"><h3>Linear + indirekt</h3><div class="bs">Abschr. / WB Maschine</div><div class="hint">Betrag = AnW × Satz</div></div>
+    <div class="m-cell bg-bl"><h3>Degressiv + direkt</h3><div class="bs">Abschr. / Maschine</div><div class="hint">Betrag = BuW × Satz</div></div>
+    <div class="m-cell bg-br"><h3>Degressiv + indirekt</h3><div class="bs">Abschr. / WB Maschine</div><div class="hint">Betrag = BuW × Satz</div></div>
+  </div>
+
+  <div class="aufgabe-header">
+    <div>
+      <h2>Übung</h2>
+      <div class="aufgabe-info">Maschine, <strong>AnW 100'000</strong>, Nutzungsdauer <strong>5 Jahre</strong> → linear 20 %, degressiv 40 %</div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-solve" onclick="solve()">Lösung anzeigen</button>
+      <button class="btn btn-reset" onclick="resetAll()">Zurücksetzen</button>
+    </div>
+  </div>
+
+  <div class="exercises">
+
+    <!-- ========== 1. LINEAR + DIREKT ========== -->
+    <div class="ex-block bg-tl">
+      <h3>Linear + direkt</h3>
+      <div class="field-row"><span class="field-label">Buchungssatz</span><input type="text" class="inp-bs" data-answer="Abschr. / Maschine"></div>
+      <div class="ex-row">
+        <div class="ex-year">
+          <div class="ex-year-label">1. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="100'000 × 20 % = 20'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="100'000"></div></div>
+                <div class="t-right">
+                  <div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="20'000"></div>
+                  <div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="80'000"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+        </div>
+        <div class="ex-year">
+          <div class="ex-year-label">2. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="100'000 × 20 % = 20'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="80'000"></div></div>
+                <div class="t-right">
+                  <div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="20'000"></div>
+                  <div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="60'000"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 2. LINEAR + INDIREKT ========== -->
+    <div class="ex-block bg-tr">
+      <h3>Linear + indirekt</h3>
+      <div class="field-row"><span class="field-label">Buchungssatz</span><input type="text" class="inp-bs" data-answer="Abschr. / WB Maschine"></div>
+      <div class="ex-row">
+        <div class="ex-year">
+          <div class="ex-year-label">1. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="100'000 × 20 % = 20'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="100'000"></div></div>
+                <div class="t-right"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="100'000"></div></div>
+              </div>
+            </div>
+            <div class="t-konto">
+              <div class="t-title">WB Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="20'000"></div></div>
+                <div class="t-right"><div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="20'000"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+          <div class="field-row"><span class="field-label">Buchwert</span><input type="text" class="inp-calc" data-answer="100'000 − 20'000 = 80'000"></div>
+        </div>
+        <div class="ex-year">
+          <div class="ex-year-label">2. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="100'000 × 20 % = 20'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="100'000"></div></div>
+                <div class="t-right"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="100'000"></div></div>
+              </div>
+            </div>
+            <div class="t-konto">
+              <div class="t-title">WB Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="40'000"></div></div>
+                <div class="t-right">
+                  <div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="20'000"></div>
+                  <div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="20'000"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+          <div class="field-row"><span class="field-label">Buchwert</span><input type="text" class="inp-calc" data-answer="100'000 − 40'000 = 60'000"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 3. DEGRESSIV + DIREKT ========== -->
+    <div class="ex-block bg-bl">
+      <h3>Degressiv + direkt</h3>
+      <div class="field-row"><span class="field-label">Buchungssatz</span><input type="text" class="inp-bs" data-answer="Abschr. / Maschine"></div>
+      <div class="ex-row">
+        <div class="ex-year">
+          <div class="ex-year-label">1. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="100'000 × 40 % = 40'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="100'000"></div></div>
+                <div class="t-right">
+                  <div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="40'000"></div>
+                  <div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="60'000"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+        </div>
+        <div class="ex-year">
+          <div class="ex-year-label">2. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="60'000 × 40 % = 24'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="60'000"></div></div>
+                <div class="t-right">
+                  <div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="24'000"></div>
+                  <div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="36'000"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== 4. DEGRESSIV + INDIREKT ========== -->
+    <div class="ex-block bg-br">
+      <h3>Degressiv + indirekt</h3>
+      <div class="field-row"><span class="field-label">Buchungssatz</span><input type="text" class="inp-bs" data-answer="Abschr. / WB Maschine"></div>
+      <div class="ex-row">
+        <div class="ex-year">
+          <div class="ex-year-label">1. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="100'000 × 40 % = 40'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="100'000"></div></div>
+                <div class="t-right"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="100'000"></div></div>
+              </div>
+            </div>
+            <div class="t-konto">
+              <div class="t-title">WB Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="40'000"></div></div>
+                <div class="t-right"><div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="40'000"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+          <div class="field-row"><span class="field-label">Buchwert</span><input type="text" class="inp-calc" data-answer="100'000 − 40'000 = 60'000"></div>
+        </div>
+        <div class="ex-year">
+          <div class="ex-year-label">2. Jahr</div>
+          <div class="field-row"><span class="field-label">Betrag</span><input type="text" class="inp-calc" data-answer="60'000 × 40 % = 24'000"></div>
+          <div class="t-konten">
+            <div class="t-konto">
+              <div class="t-title">Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="100'000"></div></div>
+                <div class="t-right"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="100'000"></div></div>
+              </div>
+            </div>
+            <div class="t-konto">
+              <div class="t-title">WB Maschine</div>
+              <div class="t-body">
+                <div class="t-left"><div class="t-entry"><span class="t-entry-label">SB</span><input type="text" data-answer="64'000"></div></div>
+                <div class="t-right">
+                  <div class="t-entry"><span class="t-entry-label">AB</span><input type="text" data-answer="40'000"></div>
+                  <div class="t-entry"><span class="t-entry-label">Abschr.</span><input type="text" data-answer="24'000"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="year-spacer"></div>
+          <div class="field-row"><span class="field-label">Buchwert</span><input type="text" class="inp-calc" data-answer="100'000 − 64'000 = 36'000"></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="footer">Alle vier Kombinationen sind buchhalterisch korrekt.</p>
+</div>
+
+<script>
+function normalize(s){return s.replace(/\s+/g,' ').replace(/['′'´]/g,"'").replace(/[–—]/g,'-').replace(/×/g,'x').replace(/\*/g,'x').trim().toLowerCase()}
+function checkField(el){
+  const v=normalize(el.value),a=normalize(el.dataset.answer);
+  if(!v){el.classList.remove('correct','incorrect');return}
+  el.classList.toggle('correct',v===a);
+  el.classList.toggle('incorrect',v!==a);
+}
+document.querySelectorAll('input[data-answer]').forEach(el=>{
+  el.addEventListener('blur',()=>checkField(el));
+  el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();checkField(el)}});
+});
+function solve(){document.querySelectorAll('input[data-answer]').forEach(el=>{el.value=el.dataset.answer;el.classList.add('correct');el.classList.remove('incorrect')})}
+function resetAll(){document.querySelectorAll('input[data-answer]').forEach(el=>{el.value='';el.classList.remove('correct','incorrect')})}
+</script>
+</body>
+</html>
